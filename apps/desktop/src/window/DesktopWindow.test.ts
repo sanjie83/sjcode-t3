@@ -77,7 +77,7 @@ function makeFakeBrowserWindow() {
     copyImageAt: vi.fn(),
     focus: vi.fn(),
     isDestroyed: vi.fn(() => false),
-    getURL: vi.fn(() => "t3code-dev://app/"),
+    getURL: vi.fn(() => "aionui-dev://app/"),
     getZoomLevel: vi.fn(() => zoomLevel),
     getZoomFactor: vi.fn(() => 1.2 ** zoomLevel),
     setZoomLevel: vi.fn((level: number) => {
@@ -536,7 +536,7 @@ describe("DesktopWindow", () => {
   });
 
   it("rejects renderer navigations whose origin only serializes as null", () => {
-    for (const applicationUrl of ["t3code://app/", "t3code-dev://app/"]) {
+    for (const applicationUrl of ["aionui://app/", "aionui-dev://app/"]) {
       assert.isTrue(
         DesktopWindow.isSameOriginRendererNavigation({
           applicationUrl,
@@ -546,21 +546,21 @@ describe("DesktopWindow", () => {
       );
     }
     for (const navigationUrl of [
-      "t3code://other/",
-      "t3code://app.example/",
-      "t3code://app:8080/",
-      "t3code://user@other/",
-      "t3code:app",
-      "t3code-dev://app/",
+      "aionui://other/",
+      "aionui://app.example/",
+      "aionui://app:8080/",
+      "aionui://user@other/",
+      "aionui:app",
+      "aionui-dev://app/",
       "file:///etc/passwd",
       "data:text/html,<p>hi</p>",
       "javascript:alert(1)",
       "about:blank",
-      "blob:t3code://app/0b5e2c4a",
+      "blob:aionui://app/0b5e2c4a",
     ]) {
       assert.isFalse(
         DesktopWindow.isSameOriginRendererNavigation({
-          applicationUrl: "t3code://app/",
+          applicationUrl: "aionui://app/",
           navigationUrl,
         }),
         navigationUrl,
@@ -1580,9 +1580,9 @@ describe("DesktopWindow", () => {
           return yield* Effect.die("will-navigate listener was not registered");
         }
         for (const [url, expectedPrevented] of [
-          ["t3code-dev://app/threads?id=1#latest", false],
-          ["t3code-dev://other/", true],
-          ["t3code://app/", true],
+          ["aionui-dev://app/threads?id=1#latest", false],
+          ["aionui-dev://other/", true],
+          ["aionui://app/", true],
         ] as const) {
           const preventDefault = vi.fn();
           willNavigate({ preventDefault }, url);

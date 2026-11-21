@@ -13,8 +13,9 @@ import * as Scope from "effect/Scope";
 import * as Electron from "electron";
 
 export const DESKTOP_HOST = "app";
-const DESKTOP_PRODUCTION_SCHEME = "t3code";
-const DESKTOP_DEVELOPMENT_SCHEME = "t3code-dev";
+// Keep the legacy `aionui` scheme so existing SJCode deep links keep working.
+const DESKTOP_PRODUCTION_SCHEME = "aionui";
+const DESKTOP_DEVELOPMENT_SCHEME = "aionui-dev";
 
 export function getDesktopScheme(isDevelopment: boolean): string {
   return isDevelopment ? DESKTOP_DEVELOPMENT_SCHEME : DESKTOP_PRODUCTION_SCHEME;

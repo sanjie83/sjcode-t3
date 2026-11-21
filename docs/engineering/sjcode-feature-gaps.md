@@ -7,13 +7,13 @@
 
 ## 结论速览
 
-| 能力             | t3code 原生覆盖                                         | 真实缺口                                    | 建议                                                  | 优先级 |
-| ---------------- | ------------------------------------------------------- | ------------------------------------------- | ----------------------------------------------------- | ------ |
-| 品牌 / 安装身份  | —                                                       | 已在 P1 完成                                | 已提交到本分支                                        | 完成   |
-| mirasim 界面融合 | 线程侧栏、composer 模型/推理选择、Welcome 页            | 三步引导文案与视觉、多会话分组窗格、导航 IA | 在 t3code React UI 上做定向改造，不移植旧 AionUi 组件 | P2     |
-| Runtime Doctor   | Welcome/Providers 已做 agent CLI 检测                   | Java/Spring Boot 项目运行时检测             | 作为独立工具页或 skill 补上，不复用旧 Rust CLI        | P3     |
-| Project Memory   | 无直接对应                                              | 四类型记忆 / 索引 / 来源字段                | 后端新增，工作量与风险最高                            | P4     |
-| Git delivery     | checkpoints / source control / worktree / PR 链接已很强 | 旧「只读本地检查 + opt-in skill」语义       | Mostly superseded；只补 opt-in 开关说明               | P4     |
+| 能力             | t3code 原生覆盖                                         | 真实缺口                                    | 建议                                                               | 优先级     |
+| ---------------- | ------------------------------------------------------- | ------------------------------------------- | ------------------------------------------------------------------ | ---------- |
+| 品牌 / 安装身份  | —                                                       | 已在 P1 完成                                | 已提交到本分支                                                     | 完成       |
+| mirasim 界面融合 | 线程侧栏、composer 模型/推理选择、Welcome 页            | 三步引导文案与视觉、多会话分组窗格、导航 IA | 在 t3code React UI 上做定向改造，不移植旧 AionUi 组件              | P2         |
+| Runtime Doctor   | Welcome/Providers 已做 agent CLI 检测                   | Java/Spring Boot 项目运行时检测             | 已完成：scripts/sjcode-runtime-doctor.ts + t3.json action + 6 测试 | 完成       |
+| Project Memory   | 无直接对应                                              | 四类型记忆 / 索引 / 来源字段                | 后端新增，工作量与风险最高；尚未实现                               | P4（剩余） |
+| Git delivery     | checkpoints / source control / worktree / PR 链接已很强 | 旧「只读本地检查 + opt-in skill」语义       | 已完成：策略映射见 sjcode-git-delivery-policy.md                   | 完成       |
 
 ## 1. mirasim 界面融合
 

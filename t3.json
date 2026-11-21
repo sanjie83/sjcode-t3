@@ -13,6 +13,11 @@
       "command": "node scripts/setup-worktree.ts",
       "icon": "configure",
       "runOnWorktreeCreate": true
+    },
+    {
+      "name": "Runtime Doctor",
+      "command": "node scripts/sjcode-runtime-doctor.ts .",
+      "icon": "debug"
     }
   ]
 }

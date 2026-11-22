@@ -48,3 +48,9 @@
 - 多环境：当前面板读同源环境（当前 server）的 team 数据；若需跨环境聚合，要扩展 `useEnvironmentHttpBaseUrl` 逐环境拉取。
 - Windows 上 `vp run i18n:check` 因 `node_modules/.bin/gt` 的 shim 被 node 直接执行而报语法错误（既有环境问题，非本次改动）；各 app 的 `i18n:generate` 本身成功。
 - 浏览器单测在 Windows 环境有 "no tests"/BrowserWorker 问题（既有，非本次改动）；本阶段以 typecheck + build + 非浏览器单测为门禁。
+
+## 品牌文案技术债（重要）
+
+`gt generate` 会从源码 `<T>` 文案重新生成 en.json。原 P1 的品牌化只改了翻译值（SJCode），没改源码 `<T>`（仍是 "T3 Code"），所以任何一次 `i18n:generate` 都会把品牌值回滚成 T3 Code。本提交在 generate 之后再次把 12 个 locale 文件的 "T3 Code" 恢复为 "SJCode"，因此 **en.json 与源文案存在有意的不一致**，`i18n:check` 会报 drift（但 Windows 上该检查因 gt shim 问题本就跑不起来）。
+
+根治方式（独立任务，未做）：把源码所有 `<T>T3 Code…</T>` 改成 `<T>SJCode…</T>`（core/desktop/web/mobile 共数十处），再跑一次 generate。这样品牌值才稳定，不依赖手工恢复。

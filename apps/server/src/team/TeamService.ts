@@ -123,7 +123,20 @@ const make = Effect.gen(function* () {
       Effect.gen(function* () {
         const existing = yield* store.getTeam(input.teamId);
         if (existing !== null) return yield* fail("conflict", "Team id already exists.");
-        const team = makeTeam(input, wallClock);
+        const team = makeTeam(
+          {
+            ...input,
+            mandate: {
+              strength: "explicit",
+              policyVersion: "v1",
+              scope: input.projectId,
+              basis: "leader",
+              grantedBy: input.leaderThreadId,
+              grantedAt: wallClock.now(),
+            },
+          },
+          wallClock,
+        );
         yield* store.putTeam(team);
         return team;
       }),

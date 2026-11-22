@@ -94,17 +94,24 @@ const make = Effect.gen(function* () {
 
   const putTeam = Effect.fn("TeamStore.putTeam")((team: Team) =>
     sql`
-      INSERT INTO sjcode_teams (id, project_id, name, goal, leader_thread_id, status, created_at, updated_at)
-      VALUES (${team.id}, ${team.projectId}, ${team.name}, ${team.goal}, ${team.leaderThreadId}, ${team.status}, ${team.createdAt}, ${team.updatedAt})
+      INSERT INTO sjcode_teams (id, project_id, name, goal, leader_thread_id, status, mandate_json, created_at, updated_at)
+      VALUES (${team.id}, ${team.projectId}, ${team.name}, ${team.goal}, ${team.leaderThreadId}, ${team.status}, ${JSON.stringify(team.mandate)}, ${team.createdAt}, ${team.updatedAt})
       ON CONFLICT (id) DO UPDATE SET
-        name = excluded.name, goal = excluded.goal, status = excluded.status, updated_at = excluded.updated_at
+        name = excluded.name, goal = excluded.goal, status = excluded.status, mandate_json = excluded.mandate_json, updated_at = excluded.updated_at
     `.pipe(Effect.asVoid, Effect.mapError(sqlError("putTeam"))),
   );
 
   const getTeam = Effect.fn("TeamStore.getTeam")((id: TeamId) =>
-    sql<Team>`SELECT id, project_id AS projectId, name, goal, leader_thread_id AS leaderThreadId,
-      status, created_at AS createdAt, updated_at AS updatedAt FROM sjcode_teams WHERE id = ${id}`.pipe(
-      Effect.map((rows) => rows[0] ?? null),
+    sql<
+      Team & { readonly mandateJson: string }
+    >`SELECT id, project_id AS projectId, name, goal, leader_thread_id AS leaderThreadId,
+      status, mandate_json AS mandateJson, created_at AS createdAt, updated_at AS updatedAt FROM sjcode_teams WHERE id = ${id}`.pipe(
+      Effect.map((rows) => {
+        const row = rows[0];
+        if (row === undefined) return null;
+        const { mandateJson, ...rest } = row;
+        return { ...rest, mandate: JSON.parse(mandateJson || "{}") as Team["mandate"] };
+      }),
       Effect.mapError(sqlError("getTeam")),
     ),
   );

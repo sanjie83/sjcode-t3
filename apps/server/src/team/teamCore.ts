@@ -22,7 +22,14 @@ export type CoreFailure =
   | { readonly code: "invalid_request"; readonly message: string };
 
 export const makeTeam = (
-  input: { teamId: TeamId; projectId: string; name: string; goal: string; leaderThreadId: string },
+  input: {
+    teamId: TeamId;
+    projectId: string;
+    name: string;
+    goal: string;
+    leaderThreadId: string;
+    mandate: Team["mandate"];
+  },
   clock: TeamClock,
 ): Team => ({
   id: input.teamId,
@@ -31,6 +38,7 @@ export const makeTeam = (
   goal: input.goal,
   leaderThreadId: input.leaderThreadId as Team["leaderThreadId"],
   status: "forming",
+  mandate: input.mandate,
   createdAt: clock.now(),
   updatedAt: clock.now(),
 });

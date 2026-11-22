@@ -75,6 +75,21 @@ export const TeamMessage = Schema.Struct({
 });
 export type TeamMessage = typeof TeamMessage.Type;
 
+/**
+ * Immutable authorization of a team, ported from dsh-superagent's Mandate
+ * (MIT): why this team may do work and how far it may go. `basis` records how
+ * the leader was admitted; `policyVersion` lets a later reviewer re-validate.
+ */
+export const TeamMandate = Schema.Struct({
+  strength: Schema.Literals(["explicit", "inferred"]),
+  policyVersion: TrimmedNonEmptyString,
+  scope: TrimmedNonEmptyString,
+  basis: Schema.Literals(["addressed", "followup", "admission", "listed", "leader"]),
+  grantedBy: TrimmedNonEmptyString,
+  grantedAt: Schema.String,
+});
+export type TeamMandate = typeof TeamMandate.Type;
+
 export const Team = Schema.Struct({
   id: TeamId,
   projectId: ProjectId,
@@ -82,6 +97,7 @@ export const Team = Schema.Struct({
   goal: Schema.String,
   leaderThreadId: ThreadId,
   status: TeamStatus,
+  mandate: TeamMandate,
   createdAt: Schema.String,
   updatedAt: Schema.String,
 });

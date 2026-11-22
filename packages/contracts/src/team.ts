@@ -117,6 +117,11 @@ export const TeamToolFailure = Schema.Struct({
 });
 export type TeamToolFailure = typeof TeamToolFailure.Type;
 
+/** Read-only list of all teams in the environment, for the UI panel. */
+export const TeamListInput = Schema.Struct({});
+export const TeamListResult = Schema.Struct({ teams: Schema.Array(TeamSnapshot) });
+export type TeamListResult = typeof TeamListResult.Type;
+
 export const TeamCreateInput = Schema.Struct({
   name: TrimmedNonEmptyString,
   goal: Schema.String,

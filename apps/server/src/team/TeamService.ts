@@ -93,6 +93,7 @@ export class TeamService extends Context.Service<
       markRead: boolean;
     }) => Effect.Effect<ReadonlyArray<TeamMessage>, TeamError>;
     readonly status: (teamId: TeamId) => Effect.Effect<TeamSnapshot, TeamError>;
+    readonly list: () => Effect.Effect<ReadonlyArray<TeamSnapshot>, TeamError>;
   }
 >()("t3/team/TeamService") {}
 
@@ -269,6 +270,15 @@ const make = Effect.gen(function* () {
     withStoreErrors,
   );
 
+  const list = Effect.fn("TeamService.list")(
+    () =>
+      Effect.gen(function* () {
+        const ids = yield* store.listTeamIds();
+        return yield* Effect.forEach(ids, (id) => status(id));
+      }),
+    withStoreErrors,
+  );
+
   return TeamService.of({
     create,
     addMember,
@@ -278,6 +288,7 @@ const make = Effect.gen(function* () {
     send,
     inbox,
     status,
+    list,
   });
 });
 

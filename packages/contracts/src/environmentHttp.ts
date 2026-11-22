@@ -9,6 +9,7 @@ import * as HttpApiSchema from "effect/http-api/HttpApiSchema";
 import * as HttpServerRespondable from "effect/http/HttpServerRespondable";
 import * as HttpServerResponse from "effect/http/HttpServerResponse";
 
+import { TeamListResult } from "./team.ts";
 import {
   AuthAccessTokenResult,
   AuthBrowserSessionRequest,
@@ -822,6 +823,14 @@ class EnvironmentProjectsHttpApi extends HttpApiGroup.make("projects")
     }).middleware(EnvironmentAuthenticatedAuth),
   ) {}
 
+class EnvironmentTeamsHttpApi extends HttpApiGroup.make("teams").add(
+  HttpApiEndpoint.get("list", "/api/teams", {
+    headers: OptionalBearerHeaders,
+    success: TeamListResult,
+    error: [EnvironmentInternalError, EnvironmentScopeRequiredError],
+  }).middleware(EnvironmentAuthenticatedAuth),
+) {}
+
 class EnvironmentPullRequestsHttpApi extends HttpApiGroup.make("pullRequests").add(
   HttpApiEndpoint.post("diff", "/api/pull-requests/diff", {
     headers: OptionalBearerHeaders,
@@ -1098,6 +1107,7 @@ export class EnvironmentHttpApi extends HttpApi.make("environment")
   .add(EnvironmentOrchestrationHttpApi)
   .add(EnvironmentPullRequestsHttpApi)
   .add(EnvironmentProjectsHttpApi)
+  .add(EnvironmentTeamsHttpApi)
   .add(EnvironmentVoiceHttpApi)
   .add(EnvironmentConnectHttpApi)
   .add(EnvironmentWebhooksHttpApi)

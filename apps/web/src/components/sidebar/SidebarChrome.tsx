@@ -1,4 +1,10 @@
-import { ArrowLeftIcon, ArrowRightIcon, ChartNoAxesColumnIcon, SettingsIcon } from "lucide-react";
+import {
+  ArrowLeftIcon,
+  ArrowRightIcon,
+  ChartNoAxesColumnIcon,
+  SettingsIcon,
+  UsersIcon,
+} from "lucide-react";
 import type { ReactNode } from "react";
 import { T, useGT } from "gt-react";
 import { memo } from "react";
@@ -15,6 +21,7 @@ import {
 import { primaryServerKeybindingsAtom } from "../../state/server";
 import { cn } from "../../lib/utils";
 import { useIssuesSupported, usePullRequestsSupported } from "../../state/environments";
+import { useTeams } from "../../state/teams";
 import { T3Wordmark } from "../T3Wordmark";
 import {
   resolveEnvironmentIdentificationPillLabel,
@@ -204,10 +211,12 @@ function SidebarUtilityItem({
   icon,
   label,
   onClick,
+  badge,
 }: {
   icon: ReactNode;
   label: string;
   onClick: () => void;
+  badge?: number;
 }) {
   return (
     <SidebarMenuItem className="shrink-0">
@@ -216,6 +225,11 @@ function SidebarUtilityItem({
           render={
             <SidebarMenuButton aria-label={label} onClick={onClick} size="icon">
               {icon}
+              {badge !== undefined && badge > 0 ? (
+                <Badge size="sm" render={<span className="absolute right-0 top-0" />}>
+                  {badge}
+                </Badge>
+              ) : null}
             </SidebarMenuButton>
           }
         />
@@ -235,6 +249,13 @@ const SidebarUtilityMenu = memo(function SidebarUtilityMenu() {
   });
   const pullRequestsSupported = usePullRequestsSupported();
   const issuesSupported = useIssuesSupported();
+  const { teams } = useTeams(15_000);
+  const activeTeamCount = teams.filter((snapshot) =>
+    snapshot.tasks.some(
+      (task) =>
+        task.status === "in_progress" || task.status === "review" || task.status === "blocked",
+    ),
+  ).length;
   const closeMobileSidebar = () => {
     if (isMobile) {
       setOpenMobile(false);
@@ -250,6 +271,10 @@ const SidebarUtilityMenu = memo(function SidebarUtilityMenu() {
   const handleIssuesClick = () => {
     closeMobileSidebar();
     void navigate({ to: "/issues", search: readIssueListPreferences() });
+  };
+  const handleTeamsClick = () => {
+    closeMobileSidebar();
+    void navigate({ to: "/teams" });
   };
   const handleSettingsClick = () => {
     closeMobileSidebar();
@@ -300,6 +325,12 @@ const SidebarUtilityMenu = memo(function SidebarUtilityMenu() {
               onClick={handleIssuesClick}
             />
           ) : null}
+          <SidebarUtilityItem
+            icon={<UsersIcon />}
+            label={gt("Teams", { $context: "sidebar link to the agent team board" })}
+            onClick={handleTeamsClick}
+            badge={activeTeamCount}
+          />
           <SidebarUtilityItem
             icon={<ChartNoAxesColumnIcon />}
             label={gt("Usage")}

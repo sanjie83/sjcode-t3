@@ -69,6 +69,7 @@ export class TeamStore extends Context.Service<
   {
     readonly putTeam: (team: Team) => Effect.Effect<void, PersistenceError>;
     readonly getTeam: (id: TeamId) => Effect.Effect<Team | null, PersistenceError>;
+    readonly listTeamIds: () => Effect.Effect<ReadonlyArray<TeamId>, PersistenceError>;
     readonly putMember: (member: TeamMember) => Effect.Effect<void, PersistenceError>;
     readonly putTask: (task: TeamTask) => Effect.Effect<void, PersistenceError>;
     readonly getTask: (
@@ -113,6 +114,13 @@ const make = Effect.gen(function* () {
         return { ...rest, mandate: JSON.parse(mandateJson || "{}") as Team["mandate"] };
       }),
       Effect.mapError(sqlError("getTeam")),
+    ),
+  );
+
+  const listTeamIds = Effect.fn("TeamStore.listTeamIds")(() =>
+    sql<{ readonly id: TeamId }>`SELECT id FROM sjcode_teams ORDER BY created_at`.pipe(
+      Effect.map((rows) => rows.map((row) => row.id)),
+      Effect.mapError(sqlError("listTeamIds")),
     ),
   );
 
@@ -189,6 +197,7 @@ const make = Effect.gen(function* () {
   return TeamStore.of({
     putTeam,
     getTeam,
+    listTeamIds,
     putMember,
     putTask,
     getTask,
